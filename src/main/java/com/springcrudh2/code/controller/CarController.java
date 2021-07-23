@@ -1,6 +1,5 @@
 package com.springcrudh2.code.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.springcrudh2.code.interfaces.CarRepo;
+import com.springcrudh2.code.interfaces.ICarImplements;
 import com.springcrudh2.code.model.Car;
 
 @RestController
@@ -24,14 +23,12 @@ import com.springcrudh2.code.model.Car;
 public class CarController {
 	
 	@Autowired
-	CarRepo CarRepository;
+	private ICarImplements impl;
 	
 	@GetMapping("/car")
 	public ResponseEntity<List<Car>> getAllCars() {
 		try {
-			List<Car> Cars = new ArrayList<Car>();
-
-			CarRepository.findAll().forEach(Cars::add);
+			List<Car> Cars = impl.carList();
 
 			if (Cars.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -46,7 +43,7 @@ public class CarController {
 	@GetMapping("/car/{id}")
 	public ResponseEntity<Car> getCarById(@PathVariable("id") long id) {
 		
-		Optional<Car> CarData = CarRepository.findById(id);
+		Optional<Car> CarData = impl.getCar(id);
 
 		if (CarData.isPresent()) {
 			return new ResponseEntity<>(CarData.get(), HttpStatus.OK);
@@ -58,27 +55,19 @@ public class CarController {
 	@PostMapping("/car")
 	public ResponseEntity<Car> createCar(@RequestBody Car body) {
 		try {
-			Car _Car = CarRepository
-					.save(new Car(body.getBrand(), body.getModel(), body.getMaximunSpeed(), body.getEngine(), body.getFeatures(), body.getLaunchDate()));
-			return new ResponseEntity<>(_Car, HttpStatus.CREATED);
+			return new ResponseEntity<>(impl.saveCar(body), HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	@PutMapping("/car/{id}")
-	public ResponseEntity<Car> updateCar(@PathVariable("id") long id, @RequestBody Car Car) {
-		Optional<Car> CarData = CarRepository.findById(id);
-
-		if (CarData.isPresent()) {
-			Car _Car = CarData.get();
-			_Car.setBrand(Car.getBrand());
-			_Car.setEngine(Car.getEngine());
-			_Car.setFeatures(Car.getFeatures());
-			_Car.setLaunchDate(Car.getLaunchDate());
-			_Car.setMaximunSpeed(Car.getMaximunSpeed());
-			_Car.setModel(Car.getModel());
-			return new ResponseEntity<>(CarRepository.save(_Car), HttpStatus.OK);
+	public ResponseEntity<Car> updateCar(@PathVariable("id") long id, @RequestBody Car body) {
+		
+		Car car = impl.updateCar(id, body);
+		
+		if (car != null) {
+			return new ResponseEntity<>(car, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -87,7 +76,7 @@ public class CarController {
 	@DeleteMapping("/car/{id}")
 	public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id) {
 		try {
-			CarRepository.deleteById(id);
+			impl.deleteCar(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
