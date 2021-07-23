@@ -3,14 +3,14 @@
 ## Tool: Postman
 
 ### Get Car List
-Endpoints: localhost:8080/api/car
-Method: GET
-Body: none
+Endpoints: localhost:8080/api/car <br>
+Method: GET <br>
+Body: none <br>
 
 ### Create Car
-Endpoints: localhost:8080/api/car
-Method: POST
-Body: 
+Endpoints: localhost:8080/api/car<br>
+Method: POST <br>
+Body: <br>
 {
     "brand": "Chevrolet",
     "model": "Blazer",
@@ -21,9 +21,9 @@ Body:
 }
 
 ### Update Car
-Endpoints: localhost:8080/api/car/1
-Method: PUT
-Body: 
+Endpoints: localhost:8080/api/car/1 <br>
+Method: PUT <br>
+Body: <br>
 {
     "brand": "Chevrolet",
     "model": "Camaro",
@@ -34,8 +34,8 @@ Body:
 }
 
 ### Delete Car
-Endpoints: localhost:8080/api/car/1
-Method: PUT
-Body: None
+Endpoints: localhost:8080/api/car/1 <br>
+Method: PUT <br>
+Body: None <br>
 
 
